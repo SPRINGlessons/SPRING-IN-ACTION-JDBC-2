@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+	   http://www.springframework.org/schema/context/spring-context.xsd
+	   http://www.springframework.org/schema/jdbc
+       http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
+
+
+    <bean id="duke"
+          class="com.tutorialspoint.PoeticJuggler">
+        <constructor-arg value="15"/>
+        <constructor-arg ref="sonnet29"/>
+    </bean>
+
+    <bean id="sonnet29"
+          class="com.tutorialspoint.Sonnet29"/>
+    <bean id="theStage"
+          class="com.tutorialspoint.Stage"
+          factory-method="getInstance"/>
+    <bean id="ticket"
+          class="com.tutorialspoint.Ticket" scope="prototype"/>
+
+    <bean id="auditorium"
+          class="com.tutorialspoint.Auditorium"
+          init-method="turnOnLights"
+          destroy-method="turnOffLights"/>
+
+
+    <bean id="saxophone"
+          class="com.tutorialspoint.Saxophone"/>
+
+
+    <bean id="kenny2"
+          class="com.tutorialspoint.Instrumentalist">
+        <property name="song" value="Jingle Bells"/>
+        <property name="age" value="37"/>
+        <property name="instrument" ref="saxophone"/>
+    </bean>
+
+    <!--find property file. See bean id='dataSource' for example ${jdbc.hsqldb.driverClass}-->
+    <context:property-placeholder location="classpath:util.properties" />
+
+    <!-- XML Bean Definitions-->
+    <bean id="mydataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.postgresql.Driver" />
+        <property name="url" value="jdbc:postgresql://localhost:5432/postgres" />
+        <property name="username" value="postgres" />
+        <property name="password" value="1741" />
+
+    </bean>
+
+
+    <bean id="mydatabean" class="com.tutorialspoint.MyDatabaseBean">
+        <!-- <property name="dataSource" ref="mydataSource"/>-->
+         <property name="jdbcTemplate" ref="jdbcTemplate" />
+        <property name="jdbcNamedTemplate" ref="jdbcNamedTemplate" />
+
+     </bean>
+
+     <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+         <constructor-arg ref="mydataSource" />
+     </bean>
+
+    <bean id="jdbcNamedTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
+        <constructor-arg ref="mydataSource" />
+    </bean>
+
+
+    </beans>
